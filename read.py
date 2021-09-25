@@ -1,6 +1,7 @@
 import imaplib 
 import email
 from helper import email_cleaner
+import random
 
 host = 'imap.gmail.com'
 
@@ -10,11 +11,14 @@ with open('/users/gursi/desktop/gmail_login.txt', 'r') as f :
 
 mail = imaplib.IMAP4_SSL(host)
 mail.login(username, password)
-mail.select('inbox')
+mail.select('inbox', readonly=True)
+print('Logged in.')
 
 _, search_data = mail.search(None, 'UNSEEN')
+mails = search_data[0].split()
+random.shuffle(mails)
 
-for num in search_data[0].split():
+for num in mails:
     _, data = mail.fetch(num, '(RFC822)')
     _, b = data[0]
     email_msg = email.message_from_bytes(b)
