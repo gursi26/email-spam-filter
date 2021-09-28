@@ -1,4 +1,4 @@
-import re 
+import re, imaplib 
 
 class SpamDetection:
 
@@ -6,7 +6,7 @@ class SpamDetection:
         self.nonos = ['http', '<', '{', '(', '\\', '[', ')', '[']
 
     def clean_text(self, text):
-        text = re.sub('\W+',' ',text).strip()
+        # text = re.sub('\W+',' ',text).strip()
         text = text.replace('\n', '')
         text = text.replace('\r', ' ')
         subs = text.split(' ')
@@ -33,6 +33,16 @@ class SpamDetection:
         # pass through model 
         return False 
 
+def login(creds_path="/users/gursi/documents/gmail_login.txt"):
+    host = 'imap.gmail.com'
+    with open(creds_path, 'r') as f : 
+        username = f.readline().replace('\n','')
+        password = f.readline().replace('\n','')
+
+    imap = imaplib.IMAP4_SSL(host)
+    imap.login(username, password)
+    print('Logged in.')
+    return imap
 
 def mark_unseen(imap, mail_uid):
     r = imap.store(mail_uid, '-FLAGS', '\Seen')
