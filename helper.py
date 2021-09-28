@@ -6,6 +6,7 @@ import pickle
 import torchtext
 import numpy as np 
 import pandas as pd 
+import os
 
 def construct_dataset():
     imap = login()
@@ -102,7 +103,7 @@ class SpamDetection:
         return output
         
 
-    def classify(self, body, sender, subject, print_body=False):
+    def classify(self, body, sender, subject):
         cleaned_body = self.clean_text(body)
         model_input = self.preprocess(cleaned_body, sender, subject)
         pred = self.model.predict(model_input)[0]
@@ -126,7 +127,6 @@ def mark_unseen(imap, mail_uid):
 
 def relabel_and_delete(imap, mail_uid, spam_folder_name):
     r1 = imap.store(mail_uid, '+X-GM-LABELS', spam_folder_name)
-    mark_unseen(imap, mail_uid)
     if r1[0] == 'OK':
         print('Mail relabeled.')
         r3 = imap.store(mail_uid, "+FLAGS", "\\Deleted")
@@ -140,6 +140,10 @@ def sort_email(imap, spam, mail_uid, spam_folder_name):
     else : 
         print('No spam detected.')
         mark_unseen(imap, mail_uid)
+
+def update_buffer(uid, buffer, buffer_file_path, current_path=os.getcwd()):
+    buffer = np.append(buffer, np.array([uid]))
+    np.save(os.path.join(current_path, buffer_file_path[:-4]), buffer)
 
 def test() :
     detect = SpamDetection()
