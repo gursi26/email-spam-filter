@@ -8,11 +8,9 @@ import pickle
 from helper import construct_dataset
 import torchtext 
 
-
-construct_dataset()
+construct_dataset(spam_name='Collegeboard spam', nonspam_name='Not spam')
 df = pd.read_csv('dataset.csv')
 df.head()
-
 
 x_train, x_test, y_train, y_test = train_test_split(df['Text'], df['Labels'], test_size=0.2)
 cv = CountVectorizer()
@@ -30,23 +28,6 @@ yhat = model.predict(x_test_tfidf)
 
 acc = accuracy_score(y_test, yhat)
 print(f'Accuracy : {acc}')
-
-tk = torchtext.data.get_tokenizer('basic_english')
-spam_test = "Would you like to join our University? Contact the admissions department or your college counsellor and apply now!"
-not_spam_test = "You college essays and homework are due. Please turn them in on google classroom"
-
-def predict(text, cv, tfidf, model):
-    text = ' '.join(tk(text))
-    text_counts = cv.transform(np.array([text]))
-    text_tfidf = tfidf.transform(text_counts)
-    prediction = model.predict(text_tfidf)
-    return prediction
-
-prediction = predict(spam_test, cv, tfidf, model)
-print(f'Text: {spam_test} | Spam: {bool(prediction[0])}')
-
-prediction = predict(spam_test, cv, tfidf, model)
-print(f'Text: {not_spam_test} | Spam: {bool(prediction[0])}')
 
 to_save = [cv, tfidf, model]
 with open('model.pickle','wb') as f : 

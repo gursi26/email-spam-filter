@@ -8,14 +8,14 @@ import numpy as np
 import pandas as pd 
 import os
 
-def construct_dataset():
+def construct_dataset(spam_name, nonspam_name):
     imap = login()
     detect = SpamDetection(model_path=None)
-    spam_folder_name = "\"" + "Collegeboard spam" + "\""
-    regular_folder_name = "\"" + "Not spam" + "\""
+    spam_folder_name = "\"" + f"{spam_name}" + "\""
+    regular_folder_name = "\"" + f"{nonspam_name}" + "\""
 
     tk = torchtext.data.get_tokenizer('basic_english')
-    df_data = {'Text':[], 'Labels':[]}
+    df_data = {'uid':[], 'Text':[], 'Labels':[]}
 
     imap.select(spam_folder_name, readonly=False)
 
@@ -36,7 +36,7 @@ def construct_dataset():
                     subject = email_msg['subject']
                     full_email = from_ + ' ' + subject + ' ' + cleaned_msg
                     full_email = ' '.join(tk(full_email))
-                    df_data['Text'].append(full_email), df_data['Labels'].append(1)
+                    df_data['Text'].append(full_email), df_data['Labels'].append(1), df_data['uid'].append(uid)
                 except : 
                     print('message could not be decoded')
 
@@ -59,7 +59,8 @@ def construct_dataset():
                     subject = email_msg['subject']
                     full_email = from_ + ' ' + subject + ' ' + cleaned_msg
                     full_email = ' '.join(tk(full_email))
-                    df_data['Text'].append(full_email), df_data['Labels'].append(0)
+                    df_data['Text'].append(full_email), df_data['Labels'].append(0), df_data['uid'].append(uid)
+
                 except : 
                     print('message could not be decoded')
 
@@ -144,17 +145,3 @@ def sort_email(imap, spam, mail_uid, spam_folder_name):
 def update_buffer(uid, buffer, buffer_file_path, current_path=os.getcwd()):
     buffer = np.append(buffer, np.array([uid]))
     np.save(os.path.join(current_path, buffer_file_path[:-4]), buffer)
-
-def test() :
-    detect = SpamDetection()
-    text = "Would you like to be part of a vibrant community of students? An enriching experience awaits you at Drexel University!"
-    sender = "Drexel University"
-    subject = "Apply now"
-    print(detect.classify(text, sender, subject))
-
-    text = "Your university applications are due. Please send them in through Google Classroom as soon as possible."
-    sender = "NPS College counselling department"
-    subject = "University applications"
-    print(detect.classify(text, sender, subject))
-
-#test()

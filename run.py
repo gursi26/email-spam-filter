@@ -58,8 +58,8 @@ while True :
 
                 if not flag : 
                     logger.error('Email data not in plain text') 
-
-                update_buffer(uid, buffer, buffer_file_path)
+                if not spam : 
+                    update_buffer(uid, buffer, buffer_file_path)
             mark_unseen(imap, uid)
 
 
@@ -69,7 +69,7 @@ while True :
             ctime = datetime.now()
             delta_time = (ctime - buffer_creation_time)
             hours = delta_time.total_seconds()/(60*60)
-            if hours > 48 : 
+            if hours > 24 : 
                 os.remove(os.path.join(current_path, buffer_file_path))
                 logger.info(f"Buffer refreshed") 
 
