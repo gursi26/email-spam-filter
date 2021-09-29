@@ -45,6 +45,7 @@ while True :
                 from_, subject = email_msg["from"], email_msg["subject"]
                 print(f'uid: {uid} | from: {from_} | subject: {subject}')
                 flag = False 
+                spam = False
                 for part in email_msg.walk():
                     if part.get_content_type()=='text/plain' :
                         flag = True 
