@@ -77,4 +77,3 @@ while True :
     print('--------- Waiting for next run ---------')
     for i in tqdm(range(10), leave=False, position=0):
         time.sleep(DELAY_IN_SECONDS/10)
-

@@ -3,10 +3,17 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.naive_bayes import MultinomialNB
 import pickle 
-import torchtext
+import nltk
 import numpy as np 
 import pandas as pd 
 import os
+
+nltk.download('punkt')
+
+def tk(text):
+    text = nltk.word_tokenize(text)
+    output = [word.lower() for word in text]
+    return output
 
 def construct_dataset(spam_name, nonspam_name):
     imap = login()
@@ -14,7 +21,6 @@ def construct_dataset(spam_name, nonspam_name):
     spam_folder_name = "\"" + f"{spam_name}" + "\""
     regular_folder_name = "\"" + f"{nonspam_name}" + "\""
 
-    tk = torchtext.data.get_tokenizer('basic_english')
     df_data = {'uid':[], 'Text':[], 'Labels':[]}
 
     imap.select(spam_folder_name, readonly=False)
@@ -72,10 +78,14 @@ class SpamDetection:
 
     def __init__(self, model_path='model.pickle'):
         self.nonos = ['http', '<', '{', '(', '\\', '[', ')', '[']
-        self.tk = torchtext.data.get_tokenizer('basic_english')
         if not model_path == None : 
             with open('model.pickle','rb') as f : 
                 self.cv, self.tfidf, self.model = pickle.load(f)
+
+    def tk(self,text):
+        text = nltk.word_tokenize(text)
+        output = [word.lower() for word in text]
+        return output
 
     def clean_text(self, text):
         text = text.replace('\n', '')
