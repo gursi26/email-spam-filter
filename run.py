@@ -51,11 +51,10 @@ while True :
                         flag = True 
                         try : 
                             body = part.get_payload(decode=True).decode()
-                            spam = detect.classify(body, from_, subject)
-                            sort_email(imap, spam, uid, spam_folder_name)
-                            logger.info(f"Spam: {spam} | From: {from_} | Subject: {subject}") 
                         except : 
-                            logger.error('Could not decode email')
+                            body = str(part)
+                        spam = detect.classify(body, from_, subject)
+                        sort_email(imap, spam, uid, spam_folder_name)
 
                 if not flag : 
                     logger.error('Email data not in plain text') 

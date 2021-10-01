@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd 
 import pickle
 from helper import construct_dataset
-import torchtext 
 
 construct_dataset(spam_name='Collegeboard spam', nonspam_name='Not spam')
 df = pd.read_csv('dataset.csv')
