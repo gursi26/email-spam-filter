@@ -76,7 +76,7 @@ def construct_dataset(spam_name, nonspam_name):
 
 class SpamDetection:
 
-    def __init__(self, model_path='model.pickle'):
+    def __init__(self, model_path=os.path.join(os.getcwd(),'model.pickle')):
         self.nonos = ['http', '<', '{', '(', '\\', '[', ')', '[']
         if not model_path == None : 
             with open('model.pickle','rb') as f : 
@@ -143,6 +143,11 @@ def relabel_and_delete(imap, mail_uid, spam_folder_name):
         r3 = imap.store(mail_uid, "+FLAGS", "\\Deleted")
         if r3[0] == 'OK' : 
             print('Mail deleted.')
+
+def read_by_bot(imap, mail_uid, bot_read_label):
+    r1 = imap.store(mail_uid, '+X-GM-LABELS', bot_read_label)
+    if r1[0] == 'OK':
+        print('Read by bot label added.')
 
 def sort_email(imap, spam, mail_uid, spam_folder_name):
     if spam : 
