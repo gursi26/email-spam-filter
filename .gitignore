@@ -3,6 +3,8 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=vim,visualstudiocode,macos,python,osx
 
 *.pickle
+dataset.csv
+email.log 
 
 ### macOS ###
 # General
